@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@200&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+    <title>Pokepedia</title>
+</head>
+
+<body>
+    <h1>Pokepedia</h1>
+    <div class="container">
+        <input id="pokename" class="container-elements" type="text" placeholder="enter name of pokemon here"
+            style="border: 2px solid rgb(173, 173, 173);">
+        <button id="inp" class="container-elements" type="button" style="width: 100px;">Find</button>
+    </div>
+    <div id='card' class="container grid-container" style="visibility: hidden; position: relative; top: 80px;">
+        <p id="name" class="container-elements"
+            style="width: 40vh; background-color: rgb(189, 228, 208); text-transform: capitalize; text-align: center; box-shadow: 2px 2px rgb(173, 173, 173); grid-column-start: 1; grid-column-end: 3;">
+        </p>
+        <img id="imgef" class="container-elements" style="padding-right: 1vw; width: fit-content;">
+        <img id="imgeb" class="container-elements" style="padding-left: 1vw; width: fit-content;">
+        <p id="height" class="container-elements"
+            style="margin-right: 10px; width:fit-content; background-color: white; box-shadow: 2px 2px rgb(173, 173, 173);">
+        </p>
+        <p id="weight" class="container-elements"
+            style="margin-left: 10px; width:fit-content; background-color: white; box-shadow: 2px 2px rgb(173, 173, 173);">
+        </p><br>
+    </div>
+    <button type="button" id="dwnld" class="container-elements" style="visibility: hidden; position: relative; top: 100px; width: fit-content;">Download</button>
+    <script src="html2canvas.js"></script>
+    <script>
+        let inp = document.getElementById('inp');
+        inp.addEventListener('click', () => {
+            let pokename = document.getElementById('pokename').value;
+            let URL = "https://pokeapi.co/api/v2/pokemon/".concat(pokename);
+            let p = fetch(URL);
+            p.then((response) => {
+                return response.json();
+            }).then((result) => {
+                console.log(result);
+                let cont = document.getElementById('card')
+                let name = document.getElementById('name');
+                name.innerHTML = result.name;
+                let imgef = document.getElementById('imgef');
+                imgef.src = result.sprites.front_default;
+                let imgeb = document.getElementById('imgeb');
+                imgeb.src = result.sprites.back_default;
+                let height = document.getElementById('height');
+                let heighttext = "<p>Height : ".concat(((result.height) * 10).toString(), " cm </p>");
+                height.innerHTML = heighttext;
+                let weight = document.getElementById('weight');
+                let weighttext = "<p>Weight : ".concat(((result.weight) / 10).toString(), " kg </p>");
+                weight.innerHTML = weighttext;
+                cont.style.visibility = 'visible';
+                dwnld.style.visibility='visible'; 
+            });
+        });
+        dwnld.addEventListener('click',()=>{
+            let q=html2canvas(card);
+            q.then(canvas=>{
+                let anch=document.createElement('a');
+                anch.href=canvas.toDataURL('png');
+                anch.download=pokename.value.concat('.png');
+                anch.click();
+                anch.remove();
+            });
+ });
+    </script>
+</body>
+
+</html>
